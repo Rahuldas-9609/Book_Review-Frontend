@@ -62,10 +62,14 @@ function Login() {
                     </InputGroup.Text>
                   </InputGroup>
                 </Form.Group>
-
-                <Button variant="primary" type="submit" className="w-100 fw-semibold">
-                  Login
-                </Button>
+                <div className="text-center">
+                  <Button variant="primary" type="submit" className="w-100 fw-semibold">
+                    Login
+                  </Button>
+                </div>
+                <p className="text-center mt-3 small">
+                  Don't have an account? <a href="/Sign-up">Sign Up</a>
+                </p>
               </Form>
             </Card.Body>
           </Card>
