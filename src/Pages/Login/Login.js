@@ -1,81 +1,114 @@
 import React, { useState } from 'react';
-import {
-  Form,
-  Button,
-  Container,
-  Row,
-  Col,
-  Card,
-  InputGroup
-} from 'react-bootstrap';
-import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { GoEye, GoEyeClosed } from "react-icons/go";
+import { ToastContainer, toast } from 'react-toastify';
+import { Link, useNavigate } from 'react-router-dom';
+import Header from '../../Components/Header/Header';
+
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
-  };
+    let mailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    if (!email) return toast.warning('Email is required!');
+    if (!mailRegex.test(email)) return toast.warning('Email is not valid!');
+    if (!password) return toast.warning('Password is required!')
+
+
+    try {
+
+      let response = await fetch('http://localhost:5000/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+          {
+            email,
+            password
+          }
+        ),
+      });
+      response = await response.json();
+
+      if (response.status) {
+        toast.success('Login successful!')
+        navigate('/');
+
+
+      } else {
+        toast.error(response.message);
+      }
+
+    } catch (error) {
+      console.error('Error:', error);
+      return;
+    }
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-md-center">
-        <Col md={6}>
-          <Card className="shadow-sm rounded-4">
-            <Card.Body>
-              <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="formBasicEmail" className="mb-3">
-                  <Form.Label>Email address</Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </Form.Group>
+    <>
+      <Header />
+      <Container className="mt-5">
+        <ToastContainer />
+        <Row className="justify-content-md-center">
+          <Col xs={12} md={6}>
+            <h2 className="mb-4 text-center">Login</h2>
+            <Form onSubmit={handleLogin}>
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </Form.Group>
 
-                <Form.Group controlId="formBasicPassword" className="mb-3">
-                  <Form.Label>Password</Form.Label>
-                  <InputGroup>
-                    <Form.Control
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                    <InputGroup.Text
-                      onClick={togglePasswordVisibility}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
-                    </InputGroup.Text>
-                  </InputGroup>
-                </Form.Group>
-                <div className="text-center">
-                  <Button variant="primary" type="submit" className="w-100 fw-semibold">
-                    Login
-                  </Button>
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <div className="position-relative">
+                  <Form.Control
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="position-absolute top-50 end-0 translate-middle-y me-3"
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {showPassword ? <GoEyeClosed size={20} /> : <GoEye size={20} />}
+                  </span>
                 </div>
-                <p className="text-center mt-3 small">
-                  Don't have an account? <a href="/Sign-up">Sign Up</a>
-                </p>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+              </Form.Group>
+
+              <div className="d-grid">
+                <Button variant="primary" type="submit">
+                  Login
+                </Button>
+              </div>
+              <div className="d-grid mt-3">
+                <Link to="/sign-up" style={{ textDecoration: 'none' }}>
+                  <Button className='btn btn-secondary'>
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 }
 

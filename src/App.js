@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import Layout from './Pages/Layout/Layout';
 import Home from './Pages/Home/Home';
@@ -10,40 +10,27 @@ import SignUp from './Pages/SignUp/SignUp';
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
+    <BrowserRouter>
+      <Routes>
+
+        {/* Layout route with nested protected routes */}
+        <Route path="/" element={<Layout />}>
+          <Route index element={<PrivateRoute><Home /></PrivateRoute>} />
+          
+          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
 
 
+        </Route>
 
-          <Route>
-          <Route path="/" element={<Layout />} />
-          <Route
-						index
-						element={
-							<PrivateRoute>
-								<Home />
-							</PrivateRoute>
-						} />
-          <Route
-						path="/Profile"
-						element={
-							<PrivateRoute>
-								<Profile />
-							</PrivateRoute>
-						}
-					/>
-				</Route>
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/sign-up" element={<SignUp />} />
 
-
-
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Sign-up" element={<SignUp />} />
-
-        </Routes>
-      </BrowserRouter>
-
-    </>
+        {/* Optional: 404 fallback */}
+        <Route path="*" element={<h1>404 - Page Not Found</h1>} />
+        
+      </Routes>
+    </BrowserRouter>
   );
 }
 
