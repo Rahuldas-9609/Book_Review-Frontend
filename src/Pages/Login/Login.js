@@ -41,7 +41,8 @@ function Login() {
       if (response.status) {
         toast.success('Login successful!')
         navigate('/');
-
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('userId', response.data._id);
 
       } else {
         toast.error(response.message);
