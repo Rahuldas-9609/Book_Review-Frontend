@@ -14,14 +14,14 @@
 }
 
 .App-header {
-  background-color: #0b40a8;
+  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: rgb(24, 22, 22);
+  color: white;
 }
 
 .App-link {
@@ -32,7 +32,37 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+#root>* {
+  flex: 1;
+}
+
+footer {
+  position: relative;
+  bottom: 0px;
+  width: 100%;
+  margin-top: 500px;;
+}
+
+.homeCon{
+  min-height: 100vh;
+}
+.profile-container{
+  min-height: 100vh;
 }
